@@ -1,0 +1,76 @@
+﻿<Controls:MetroWindow x:Class="MainUI.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+        Dialog:DialogParticipation.Register="{Binding}"
+        xmlns:core="clr-namespace:GoogleCloud_TTS_STT.Core;assembly=GoogleCloud_TTS_STT.Core"
+        xmlns:prism="http://prismlibrary.com/" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        Title="{Binding Title}"
+        NonActiveWindowTitleBrush="{DynamicResource MahApps.Brushes.Accent}"
+        BorderThickness="0"
+        GlowBrush="Black"
+        WindowStartupLocation="CenterScreen" 
+        Height="500" Width="640" MinHeight="450" MinWidth="600">
+    <Controls:MetroWindow.IconTemplate>
+        <DataTemplate>
+            <Grid Width="{TemplateBinding Width}"
+                 Height="{TemplateBinding Height}"
+                 Margin="4"
+                 Background="Transparent"
+                 RenderOptions.EdgeMode="Aliased"
+                 RenderOptions.BitmapScalingMode="HighQuality">
+                <Image Source="pack://application:,,,/favicon.ico"></Image>
+            </Grid>
+        </DataTemplate>
+    </Controls:MetroWindow.IconTemplate>
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button Command="{Binding EnvironmentVariableCommand}" IsTabStop="False"
+                    Content="Set Environment Variable"
+                    ToolTip="Set the environment variable GOOGLE_APPLICATION_CREDENTIALS to the path of the JSON file that contains your service account key.">
+                <Button.ContentTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="4 0 0 0"
+                         VerticalAlignment="Center"
+                         Text="{Binding}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </Button.ContentTemplate>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding ApplicationCommands.WindowClosingCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+
+    <Grid Margin="6 6 6 0" Focusable="False">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Controls:MetroAnimatedSingleRowTabControl Grid.Row="0"
+            Controls:HeaderedControlHelper.HeaderFontSize="20">
+
+            <!--Google Text to Speech Region-->
+            <Controls:MetroTabItem Header="Text to Speech">
+                <ContentControl IsTabStop="False" Focusable="False" prism:RegionManager.RegionName="{Binding Source={x:Static core:RegionNames.TextToSpeechRegion}}" 
+                                Margin="8 8 8 0"/>
+            </Controls:MetroTabItem>
+
+
+            <!--Google Speech to Text Region-->
+            <Controls:MetroTabItem Header="Speech to Text">
+                <ContentControl IsTabStop="False" Focusable="False" prism:RegionManager.RegionName="{Binding Source={x:Static core:RegionNames.SpeechToTextRegion}}"
+                                 Margin="8 8 8 0"/>
+            </Controls:MetroTabItem>
+
+        </Controls:MetroAnimatedSingleRowTabControl>
+
+    </Grid>
+</Controls:MetroWindow>

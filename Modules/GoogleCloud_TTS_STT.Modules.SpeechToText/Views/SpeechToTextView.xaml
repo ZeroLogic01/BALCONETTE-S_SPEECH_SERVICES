@@ -1,0 +1,216 @@
+﻿<UserControl x:Class="GoogleCloud_TTS_STT.Modules.SpeechToText.Views.SpeechToTextView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:core="clr-namespace:GoogleCloud_TTS_STT.Modules.SpeechToText.Core.Regions"
+             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True" >
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <!-- Theme setting -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Purple.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/GoogleCloud_TTS_STT.Core;component/Themes/Generic.xaml"/>
+
+            </ResourceDictionary.MergedDictionaries>
+
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid ShowGridLines="False">
+        <Grid.Resources>
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="24"/>
+        </Grid.RowDefinitions>
+
+        <ContentControl Grid.Row="0" IsTabStop="False"
+            prism:RegionManager.RegionName="{Binding Source={x:Static core:RegionNames.TranscriptionRegion}}"
+                                />
+
+        <!--STT Transcription settings-->
+        <Grid Grid.Row="1" Margin="0 5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+
+            <ComboBox Controls:TextBoxHelper.Watermark="Language"
+                      Controls:TextBoxHelper.UseFloatingWatermark="True"
+                      Grid.Column="0" Grid.Row="0" Margin="0 0 5 0" MaxDropDownHeight="160"
+                      ItemsSource="{Binding  Path=SupportedLangauges,UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding Path=SelectedLangauge}"
+                  SelectedValue="{Binding Path=SelectedLangauge.LanguageCode,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                  DisplayMemberPath="LanguageName"
+                  SelectedValuePath="LanguageCode"/>
+
+            <ComboBox Controls:TextBoxHelper.Watermark="Transcription Model"
+                      Controls:TextBoxHelper.UseFloatingWatermark="True"
+                      Grid.Column="1" Grid.Row="0" Margin="5 0 0 0"
+                       ItemsSource="{Binding  Path=SupportedTranscriptionModels,UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding Path=SelectedTranscriptionModel}"
+                  SelectedValue="{Binding Path=SelectedTranscriptionModel.ModelValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                  DisplayMemberPath="ModelName"
+                  SelectedValuePath="ModelValue"
+                  />
+
+
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="0 5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+
+            <!--<ComboBox Controls:TextBoxHelper.Watermark="Speaker diarization"
+                      Controls:TextBoxHelper.UseFloatingWatermark="True"
+                      Grid.Column="0" Grid.Row="0" Margin="0 0 5 0"
+                       ItemsSource="{Binding  Path=SpeakerDiarizationList,UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding Path=SelectedSpeakerDiarization}"
+                  SelectedValue="{Binding Path=SelectedSpeakerDiarization.Value,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                  DisplayMemberPath="DisplayName"
+                  SelectedValuePath="Value"/>-->
+
+
+
+            <DockPanel Grid.Column="0" Grid.Row="0"  Margin="5 0 0 0" LastChildFill="True">
+                <DockPanel DockPanel.Dock="Left" Width="90">
+                    <TextBlock Text="Speaker diarization" FontSize="10" DockPanel.Dock="Top"/>
+                    <Controls:ToggleSwitch Margin="0 -3 0 0"
+                                   IsOn="{Binding IsSpeakerDiarizationEnabled}" DockPanel.Dock="Top">
+                        <Controls:ToggleSwitch.RenderTransform>
+                            <ScaleTransform ScaleX=".8" ScaleY=".8"/>
+                        </Controls:ToggleSwitch.RenderTransform>
+                    </Controls:ToggleSwitch>
+                </DockPanel>
+
+                <ComboBox Controls:TextBoxHelper.Watermark="Speakers"  DockPanel.Dock="Left"
+                      Controls:TextBoxHelper.UseFloatingWatermark="True" 
+                      ItemsSource="{Binding SpeakersList}" 
+                      SelectedItem="{Binding SelectedSpeakerCount}"
+                      SelectedValue="{Binding Path=SelectedSpeakerCount.Count,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                      DisplayMemberPath="Name"
+                      SelectedValuePath="Count"
+                      Controls:VisibilityHelper.IsVisible="{Binding IsSpeakerDiarizationEnabled}"
+                      />
+            </DockPanel>
+            
+
+            <Border Grid.Column="1">
+                <DockPanel HorizontalAlignment="Center">
+                    <TextBlock Text="Punctuation" FontSize="10" DockPanel.Dock="Top"/>
+                    <Controls:ToggleSwitch Margin="0 -3 0 0" HorizontalContentAlignment="Center"
+                                       IsOn="{Binding IsAutomaticPunctuationEnabled}"
+                                           Width="80">
+                        <Controls:ToggleSwitch.RenderTransform>
+                            <ScaleTransform ScaleX=".8" ScaleY=".8"/>
+                        </Controls:ToggleSwitch.RenderTransform>
+                    </Controls:ToggleSwitch>
+                </DockPanel>
+            </Border>
+
+
+            <DockPanel HorizontalAlignment="Right"
+                        Grid.Row="0" Grid.Column="2" >
+                <TextBlock Text="Source File From" FontSize="10" DockPanel.Dock="Top"/>
+                <Controls:ToggleSwitch
+                                OffContent="Cloud Storage"
+                                OnContent="Local Computer"
+                                Margin="0 -3 0 0"
+                                IsOn="{Binding Path=IsLocalStorageEnabled}">
+                    <Controls:ToggleSwitch.RenderTransform>
+                        <ScaleTransform ScaleX=".8" ScaleY=".8"/>
+                    </Controls:ToggleSwitch.RenderTransform>
+                </Controls:ToggleSwitch>
+            </DockPanel>
+
+        </Grid>
+        <!--Source audio/video file-->
+        <Grid Grid.Row="3" Margin="0 5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+
+            <TextBox Controls:TextBoxHelper.Watermark="Source audio/video file"
+                     Controls:TextBoxHelper.UseFloatingWatermark="True"
+                     Controls:TextBoxHelper.WatermarkAlignment="Center"
+                     IsReadOnly="True"
+                     Grid.Column="0" Grid.Row="0" Margin="0 0 5 0"
+                     Text="{Binding  Path=SourceFile,UpdateSourceTrigger=PropertyChanged}"
+                     IsTabStop="False"
+                     Visibility="{Binding Path=IsLocalStorageEnabled, Converter={StaticResource BoolToVis}}"/>
+
+            <Button Content="..." Command="{Binding ChooseFileCommand}" 
+                     HorizontalAlignment="Stretch" 
+                     VerticalContentAlignment="Center"
+                     Grid.Column="1" Grid.Row="0" 
+                     Visibility="{Binding Path=IsLocalStorageEnabled, Converter={StaticResource BoolToVis}}"
+                    />
+
+            <TextBox Controls:TextBoxHelper.Watermark="Cloud storage URI"
+                     Controls:TextBoxHelper.UseFloatingWatermark="True"
+                     Grid.Column="0" Grid.ColumnSpan="2"
+                     Grid.Row="0" Margin="0 0 0 0"
+                     Text="{Binding  Path=SourceFileURI,UpdateSourceTrigger=PropertyChanged,Mode=OneWayToSource}"
+                     Visibility="{Binding Path=IsCloudStorageEnabled, Converter={StaticResource BoolToVis}}"/>
+
+        </Grid>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" FlowDirection="RightToLeft">
+
+
+            <Button  Content="Cancel" Command="{Binding CancelSpeechToTextCommand}" 
+                     IsEnabled="{Binding IsCancelButtonEnabled}" 
+                     HorizontalAlignment="Right" Width="120"
+                     Margin="0 5 5 5"/>
+
+            <Button  Content="Transcribe" Command="{Binding TranscribeCommand}" 
+               IsEnabled="{Binding IsTranscribeButtonEnabled}" 
+               HorizontalAlignment="Right" Width="120"
+               Margin="0 5 5 5"/>
+
+        </StackPanel>
+
+        <Grid Grid.Row="5" Margin="-14 0 -14 0" HorizontalAlignment="Stretch" 
+               Background="{DynamicResource MahApps.Brushes.Accent}">
+
+            <Label Foreground="{DynamicResource MahApps.Brushes.SystemControlHighlightAltChromeWhite}" Padding="8 0 8 0" VerticalAlignment="Center" BorderThickness="0 0 0 0" BorderBrush="Gray"
+                 Panel.ZIndex="1"  Content="{Binding StatusText}"
+                   Margin="14 0"/>
+
+            <ContentControl IsTabStop="False" Panel.ZIndex="-100" 
+                            prism:RegionManager.RegionName="{Binding Source={x:Static core:RegionNames.ProgessBarRegion}}"
+                                />
+
+        </Grid>
+
+    </Grid>
+</UserControl>
